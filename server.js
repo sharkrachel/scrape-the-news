@@ -26,13 +26,12 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+
+
 app.engine("handlebars", exphbs({
     defaultLayout: "main"
 }));
 app.set("view engine", "handlebars");
-
-// Connect to Mongo
-mongoose.connect("mongodb://localhost/newsscraper", { useNewUrlParser: true });
 
 // Routes
 
@@ -70,9 +69,22 @@ app.get("/scrape", function (req, res) {
     });
 });
 
-app.get("/articles", function(req, res) {
+app.get("/", function(req, res) {
+    db.Article.find({})
+    .then(function (dbArticle) {
+        var articleArray = [];
+        for (var i = 0; i < 6; i++) {
+            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link});
+        }
+        console.log("article array: ", articleArray);
+         res.render("index", {article: articleArray})
+    })
+})
+
+app.get("/api/articles", function(req, res) {
     db.Article.find({})
     .then(function(dbArticle) {
+        console.log("Find: ", dbArticle);
     res.json(dbArticle);
     })
     .catch(function(err) {
@@ -80,7 +92,7 @@ app.get("/articles", function(req, res) {
     })
 });
 
-app.get("/articles/:id", function(req, res) {
+app.get("/api/articles/:id", function(req, res) {
     db.Article.findOne({_id: req.params.id})
     .populate("comment")
     .then(function(dbArticle) {
@@ -91,7 +103,14 @@ app.get("/articles/:id", function(req, res) {
     })
 });
 
-app.post("/articles/:id", function(req, res) {
+app.post("/api/saved", function(req, res){
+    db.Article.create(req.body)
+    .then(function(dbArticle) {
+        res.json(dbArticle)
+    })
+})
+
+app.post("/api/articles/:id", function(req, res) {
     db.Comment.create(req.body)
     .then(function(dbComment) {
         return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment._id}, {new: true})
@@ -103,6 +122,10 @@ app.post("/articles/:id", function(req, res) {
         res.json(err);
     })
 });
+
+
+// Connect to Mongo
+mongoose.connect(process.env.MONGODB_URI ||"mongodb://localhost/newsscraper" );
 
 app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");

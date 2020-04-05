@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="page-header">
+        <h1>New York Times Article Scraper</h1>
+        <div class="articles">
+       
+            {{#each article}}
+             <a target="_blank" href="https://www.nytimes.com{{this.link}}"><h3>{{this.headline}}</h3></a>
+            <p>{{this.summary}}</p>
+            <button>Save Article</button>
+                
+            {{/each}}
+        </div>
+    </div>
+
+</div>
