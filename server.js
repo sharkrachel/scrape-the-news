@@ -32,7 +32,7 @@ app.engine("handlebars", exphbs({
 app.set("view engine", "handlebars");
 
 // Connect to Mongo
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/newsscraper", { useNewUrlParser: true });
 
 // Routes
 
@@ -41,21 +41,20 @@ app.get("/scrape", function (req, res) {
     .then(function (response) {
         var $ = cheerio.load(response.data);
 
-        $("article").each(function(i, element) {
+        $("div.assetWrapper").each(function(i, element) {
             // save an empty result object
             var result = {};
 
             // Add the text and href of ever link
-            result.headline = $(this)
-            .children("h2")
+            result.headline = $(element)
+            .children()
             .text();
-            result.summary = $(this)
-            .children(".summary")
-            .text();
-            result.link = $(this)
-            .children("h2")
-            .children("a")
+            result.link = $(element)
+            .find("a")
             .attr("href");
+            result.summary = $(this)
+            .find("p")
+            .text();
 
             // Create a new Article using the result object
             db.Article.create(result)
