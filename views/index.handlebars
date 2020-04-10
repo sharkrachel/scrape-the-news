@@ -2,14 +2,37 @@
     <div class="page-header">
         <h1>New York Times Article Scraper</h1>
         <div class="articles">
-       
+
             {{#each article}}
-             <a target="_blank" href="https://www.nytimes.com{{this.link}}"><h3>{{this.headline}}</h3></a>
+            <a target="_blank" href="https://www.nytimes.com{{this.link}}">
+                <h3>{{this.headline}}</h3>
+            </a>
             <p>{{this.summary}}</p>
-            <button>Save Article</button>
-                
+            <a href="/articles/saved/{{this._id}}"><button class="button">Save Article</button></a>
+            <a class="waves-effect waves-light btn modal-trigger saveId" data-id={{this._id}} href="#modal1">Comment</a>
+
             {{/each}}
         </div>
     </div>
 
+</div>
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h4>Add a comment</h4>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="textarea1" class="materialize-textarea"></textarea>
+                        <label for="textarea1">Add comment</label>
+
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="save-button">Save</a>
+    </div>
 </div>

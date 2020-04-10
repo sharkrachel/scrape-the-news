@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 // Use the Schmea constructor to create a new CommentSchema object
 var CommentSchema = new Schema({
     // name of commenter
-    name: String,
+    // name: String,
     // body of comment
-    body: String
+    body: String, 
 });
 
 var Comment = mongoose.model("Comment", CommentSchema);

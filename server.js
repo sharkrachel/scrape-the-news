@@ -56,7 +56,7 @@ app.get("/scrape", function (req, res) {
             .text();
 
             // Create a new Article using the result object
-            db.Article.create(result)
+            db.Article.save(result)
             .then(function (dbArticle) {
                 console.log(dbArticle);
             })
@@ -73,8 +73,8 @@ app.get("/", function(req, res) {
     db.Article.find({})
     .then(function (dbArticle) {
         var articleArray = [];
-        for (var i = 0; i < 6; i++) {
-            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link});
+        for (var i = 0; i < 11; i++) {
+            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link, _id: dbArticle[i]._id});
         }
         console.log("article array: ", articleArray);
          res.render("index", {article: articleArray})
@@ -111,6 +111,9 @@ app.post("/api/saved", function(req, res){
 })
 
 app.post("/api/articles/:id", function(req, res) {
+
+    console.log("params: ", req.params.id)
+    console.log("req.body", req.body)
     db.Comment.create(req.body)
     .then(function(dbComment) {
         return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment._id}, {new: true})
