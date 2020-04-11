@@ -172,7 +172,9 @@ app.post("/api/articles/:id", function(req, res) {
 
 // Connect to Mongo
 var MONGODB_URI = (process.env.MONGODB_URI ||"mongodb://localhost/scrape-the-news" );
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+
 
 app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
