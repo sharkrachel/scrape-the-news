@@ -171,7 +171,7 @@ app.post("/api/articles/:id", function(req, res) {
 
 
 // Connect to Mongo
-var MONGODB_URI = (process.env.MONGODB_URI ||"mongodb://localhost/newsscraper" );
+var MONGODB_URI = (process.env.MONGODB_URI ||"mongodb://localhost/scrape-the-news" );
 mongoose.connect(MONGODB_URI);
 
 app.listen(PORT, function() {
