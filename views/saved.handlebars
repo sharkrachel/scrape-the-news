@@ -1,15 +1,58 @@
+<nav>
+    <div class="nav-wrapper grey darken-4">
+        <a href="#" class="brand-logo">NYT Scraper</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="/saved">Saved Articles</a></li>
+            <li><a href="/scrape">Scrape Articles</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="page-header">
+    <img src="/assets/images/utsav-srestha-HeNrEdA4Zp4-unsplash.jpg" alt="">
+    <h1 class="page-title">New York Times Article Scraper</h1>
+</div>
+
 <div class="container">
-    <div class="page-header">
-        <h1>New York Times Saved Articles</h1>
-        <div class="articles">
-       
-            {{#each article}}
-             <a target="_blank" href="https://www.nytimes.com{{this.link}}"><h3>{{this.headline}}</h3></a>
-            <p>{{this.summary}}</p>
-            <a href="/articles/comments/{{this._id}}"><button class="button">Comments</button></a>
-                
+    <div class="articles">
+
+        {{#each article}}
+        <a target="_blank" href="https://www.nytimes.com{{this.link}}">
+            <h5 class="article-headline">{{this.headline}}</h5>
+        </a>
+        <p class="summary">{{this.summary}}</p>
+        <a class="waves-effect grey darken-4 btn modal-trigger get-comments" data-ids={{this._id}}
+            href="#modal1">Comments</a>
+        {{!-- <button class="remove-saved waves-effect grey darken-4 btn">Unsave</button> --}}
+
+        {{/each}}
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h4>Comments</h4>
+        <div class="display-comments">
+            {{#each comments}}
+            <p>
+
+            </p>
             {{/each}}
         </div>
-    </div>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="textarea1" class="materialize-textarea"></textarea>
+                        <label for="textarea1">Add comment</label>
 
+                        <input type="hidden" id="hidden">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect grey darken-4 btn-flat save-button">Save</a>
+    </div>
 </div>

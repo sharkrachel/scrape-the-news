@@ -2,7 +2,7 @@ var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
-
+var ObjectId = require("mongodb").ObjectID;
 // Scrapping tools
 var axios = require("axios");
 var cheerio = require("cheerio");
@@ -56,7 +56,7 @@ app.get("/scrape", function (req, res) {
             .text();
 
             // Create a new Article using the result object
-            db.Article.save(result)
+            db.Article.create(result)
             .then(function (dbArticle) {
                 console.log(dbArticle);
             })
@@ -103,11 +103,20 @@ app.get("/api/articles/:id", function(req, res) {
     })
 });
 
-app.get("/api/comments/:id", function(req, res) {
-    db.Comment.findOne({_id: req.params.id})
+app.get("/api/comments/:articleid", function(req, res) {
+    db.Article.findOne({_id: req.params.articleid})
     .then(function(data) {
-        res.json(data);
-    });
+        console.log("Data: ", data);
+        var commentArray = data.comment.map(function(value) {
+            return ObjectId(value);
+        })
+        console.log("commentArray", commentArray);
+        db.Comment.find({_id: {$in: commentArray}})
+        .then(function(result) {
+            res.render("comments", {comments: result});
+        })
+    })
+
 })
 
 app.get("/saved", function(req, res) {
@@ -117,13 +126,14 @@ app.get("/saved", function(req, res) {
         var articleArray = [];
         for (var i = 0; i < dbArticle.length; i++) {
             console.log("article: " ,dbArticle[i], "i: ",  i)
-            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link, _id: dbArticle[i]._id, comment: dbArticle[i].comment});
+            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link, _id: dbArticle[i]._id, comments: dbArticle[i].comment});
         }
         // console.log("saved data: ", data);
-        console.log("Article Array: ", articleArray)
+        console.log("comments", dbArticle[0].comment);
         res.render("saved", {article: articleArray});
     })
 })
+
 
 
 app.put("/api/articles/:id", function(req, res){
@@ -145,7 +155,9 @@ app.post("/api/articles/:id", function(req, res) {
     console.log("req.body", req.body)
     db.Comment.create(req.body)
     .then(function(dbComment) {
-        return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment}, {new: true})
+        console.log("dbComment: ", dbComment);
+        return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {comment: dbComment}}, {new: true})
+        
     })
     .then(function (dbArticle) {
         res.json(dbArticle);

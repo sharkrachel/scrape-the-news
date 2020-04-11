@@ -1,0 +1,25 @@
+.page-header {
+    /* background-image: url("/assets/images/utsav-srestha-HeNrEdA4Zp4-unsplash.jpg"); */
+    height: 260px;
+    width: auto;
+    margin-top: 20px;
+}
+
+.page-title {
+    margin-top: -200px;
+    color: white;
+    text-align: center;
+}
+img {
+    height: 260px;
+    width: 100%;
+}
+
+.article-headline {
+    font-size: 26px;
+    color: black;
+}
+
+.summary {
+    font-size: 18px;
+}
