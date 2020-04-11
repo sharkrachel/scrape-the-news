@@ -103,12 +103,41 @@ app.get("/api/articles/:id", function(req, res) {
     })
 });
 
-app.post("/api/saved", function(req, res){
-    db.Article.create(req.body)
+app.get("/api/comments/:id", function(req, res) {
+    db.Comment.findOne({_id: req.params.id})
+    .then(function(data) {
+        res.json(data);
+    });
+})
+
+app.get("/saved", function(req, res) {
+    db.Article.find({saved: true})
     .then(function(dbArticle) {
-        res.json(dbArticle)
+        console.log("dbArticle", dbArticle)
+        var articleArray = [];
+        for (var i = 0; i < dbArticle.length; i++) {
+            console.log("article: " ,dbArticle[i], "i: ",  i)
+            articleArray.push({headline: dbArticle[i].headline, summary: dbArticle[i].summary, link: dbArticle[i].link, _id: dbArticle[i]._id, comment: dbArticle[i].comment});
+        }
+        // console.log("saved data: ", data);
+        console.log("Article Array: ", articleArray)
+        res.render("saved", {article: articleArray});
     })
 })
+
+
+app.put("/api/articles/:id", function(req, res){
+    console.log("id: ", req.params.id)
+    db.Article.findOneAndUpdate({_id: req.params.id}, {$set:{saved: true}}, {new: true}, (err, doc) => {
+        if (err) {
+            console.log("Something wrong when updating data!");
+        }
+    
+        res.json(doc)
+    });
+})
+
+
 
 app.post("/api/articles/:id", function(req, res) {
 
@@ -116,7 +145,7 @@ app.post("/api/articles/:id", function(req, res) {
     console.log("req.body", req.body)
     db.Comment.create(req.body)
     .then(function(dbComment) {
-        return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment._id}, {new: true})
+        return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment}, {new: true})
     })
     .then(function (dbArticle) {
         res.json(dbArticle);
@@ -125,6 +154,8 @@ app.post("/api/articles/:id", function(req, res) {
         res.json(err);
     })
 });
+
+
 
 
 // Connect to Mongo

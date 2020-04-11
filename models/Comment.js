@@ -8,7 +8,7 @@ var CommentSchema = new Schema({
     // name of commenter
     // name: String,
     // body of comment
-    body: String, 
+    body: String 
 });
 
 var Comment = mongoose.model("Comment", CommentSchema);

@@ -2,5 +2,6 @@
 
 module.exports = {
     Article: require("./Article"),
-    Comment: require("./Comment")
+    Comment: require("./Comment"),
+    SavedArticle: require("./SavedArticle")
 };
